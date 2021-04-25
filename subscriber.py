@@ -23,7 +23,6 @@ at https://cloud.google.com/pubsub/docs.
 
 import argparse
 
-
 def list_subscriptions_in_topic(project_id, topic_id):
     """Lists all subscriptions for a given topic."""
     # [START pubsub_list_topic_subscriptions]
@@ -407,7 +406,8 @@ def receive_messages_with_custom_attributes(project_id, subscription_id, timeout
     # [START pubsub_subscriber_async_pull_custom_attributes]
     from concurrent.futures import TimeoutError
     from google.cloud import pubsub_v1
-
+    credential_path = (r"C:\Users\Shree\Desktop\python\pubsub-python\service-account.json")
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
     # TODO(developer)
     # project_id = "your-project-id"
     # subscription_id = "your-subscription-id"

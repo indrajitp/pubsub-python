@@ -23,6 +23,7 @@ from google.api_core.exceptions import InternalServerError
 from google.api_core.exceptions import NotFound
 from google.api_core.exceptions import Unknown
 from google.cloud import pubsub_v1
+from google.oauth2 import service_account
 import pytest
 
 import subscriber
