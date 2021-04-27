@@ -1,13 +1,32 @@
-def implicit():
-    from google.cloud import pubsub_v1
+import argparse
 
-    # If you don't specify credentials when constructing the client, the
-    # client library will look for credentials in the environment.
-    #storage_client = storage.Client()
-    subscriber = pubsub_v1.SubscriberClient()
-    print(f"Received")
-    # Make an authenticated API request
-    subs = list(subscriber.list_subscriptions())
-    print(buckets)
+from google.cloud import pubsub_v1
 
-implicit()
+
+def pub(project_id, topic_id):
+    """Publishes a message to a Pub/Sub topic."""
+    # Initialize a Publisher client.
+    client = pubsub_v1.PublisherClient()
+    # Create a fully qualified identifier of form `projects/{project_id}/topics/{topic_id}`
+    topic_path = client.topic_path(project_id, topic_id)
+
+    # Data sent to Cloud Pub/Sub must be a bytestring.
+    data = b"Hello, World!"
+
+    # When you publish a message, the client returns a future.
+    api_future = client.publish(topic_path, data)
+    message_id = api_future.result()
+
+    print(f"Published {data} to {topic_path}: {message_id}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("project_id", help="Google Cloud project ID")
+    parser.add_argument("topic_id", help="Pub/Sub topic ID")
+
+    args = parser.parse_args()
+
+    pub(args.project_id, args.topic_id)

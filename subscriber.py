@@ -22,6 +22,24 @@ at https://cloud.google.com/pubsub/docs.
 """
 
 import argparse
+from google.cloud import pubsub_v1
+
+
+def publish_messages(project_id, topic_id, data):
+    """Publishes a message to a Pub/Sub topic."""
+    # Initialize a Publisher client.
+    client = pubsub_v1.PublisherClient()
+    # Create a fully qualified identifier of form `projects/{project_id}/topics/{topic_id}`
+    topic_path = client.topic_path(project_id, topic_id)
+
+    # Data sent to Cloud Pub/Sub must be a bytestring.
+    #data = b"Hello, World!"
+
+    # When you publish a message, the client returns a future.
+    api_future = client.publish(topic_path, data)
+    message_id = api_future.result()
+
+    print(f"Published {data} to {topic_path}: {message_id}")
 
 
 def receive_messages(project_id, subscription_id, timeout=None):
@@ -118,7 +136,7 @@ def receive_messages_with_flow_control(project_id, subscription_id, timeout=None
     def callback(message):
         print(f"Received {message.data}.")
         message.ack()
-        print(f"Sending to publisher method to push")
+        publish_messages(project_id, "test-destination-topic", message.data)
 
     # Limit the subscriber to only have ten outstanding messages at a time.
     flow_control = pubsub_v1.types.FlowControl(max_messages=10)
